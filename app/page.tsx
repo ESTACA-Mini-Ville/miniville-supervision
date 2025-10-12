@@ -24,16 +24,17 @@ export default function Home() {
       });
 
       map.on('load', () => {
-        // image background
+        const imgCoords: [number, number][] = [
+          [-3.06, 3.00], // top-left
+          [2.69, 3.30],  // top-right
+          [3.11, -3.67], // bottom-right
+          [-2.74, -3.98] // bottom-left
+        ];
+
         map.addSource('imaginary-map', {
           type: 'image',
           url: '/imaginary-map.png',
-          coordinates: [
-            [-50, 50], // top-left
-            [50, 50],  // top-right
-            [50, -50], // bottom-right
-            [-50, -50] // bottom-left
-          ],
+          coordinates: imgCoords,
         });
 
         map.addLayer({
@@ -42,11 +43,16 @@ export default function Home() {
           source: 'imaginary-map',
         });
 
-        map.fitBounds([[-50, -50], [50, 50]], { padding: 0, animate: false });
+        // compute bounding box from the four coordinates and fit view
+        const lons = imgCoords.map(c => c[0]);
+        const lats = imgCoords.map(c => c[1]);
+        const sw: [number, number] = [Math.min(...lons), Math.min(...lats)]; // south-west
+        const ne: [number, number] = [Math.max(...lons), Math.max(...lats)]; // north-east
+        map.fitBounds([sw, ne], { padding: 20, animate: false });
 
         // place car using MapLibre symbol layer (no DOM marker element)
         const rand = (min: number, max: number) => Math.random() * (max - min) + min;
-        const randomPos: [number, number] = [rand(-50, 50), rand(-50, 50)];
+        const randomPos: [number, number] = [rand(-2.74, 3.11), rand(-3.98, 3.30)];
 
         // load car.webp reliably and add as a style image, then add a geojson source + symbol layer
         (async () => {
@@ -91,7 +97,7 @@ export default function Home() {
                 source: 'cars',
                 layout: {
                   'icon-image': 'car',
-                  'icon-size': 0.15,
+                  'icon-size': 0.10,
                   'icon-allow-overlap': true,
                   'icon-anchor': 'center',
                   'icon-rotate': ['get', 'rotation'], // use feature property
