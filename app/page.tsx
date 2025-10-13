@@ -120,7 +120,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
+    <div className="-mt-18 h-screen w-full pt-16">
       <div ref={mapEl} style={{ width: '100%', height: '100%' }} />
     </div>
   );
