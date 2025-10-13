@@ -33,7 +33,7 @@ export default function Home() {
 
         map.addSource('imaginary-map', {
           type: 'image',
-          url: '/imaginary-map.png',
+          url: '/chatgpt-map.png',
           coordinates: imgCoords,
         });
 
@@ -97,7 +97,7 @@ export default function Home() {
                 source: 'cars',
                 layout: {
                   'icon-image': 'car',
-                  'icon-size': 0.10,
+                  'icon-size': 0.08,
                   'icon-allow-overlap': true,
                   'icon-anchor': 'center',
                   'icon-rotate': ['get', 'rotation'], // use feature property
