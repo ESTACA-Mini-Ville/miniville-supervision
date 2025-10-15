@@ -65,12 +65,14 @@ const Navbar = ({ logo, menu }: NavbarProps) => {
               src={logo.logoLight}
               quality={25}
               alt={logo.alt}
+              priority={true}
               className="block max-h-8 w-full object-contain dark:hidden"
             />
             <Image
               src={logo.logoDark}
               quality={25}
               alt={logo.alt}
+              priority={true}
               className="hidden max-h-8 w-full object-contain dark:block"
             />
             <span className="text-lg font-semibold tracking-tighter"></span>
