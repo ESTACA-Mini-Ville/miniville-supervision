@@ -15,18 +15,22 @@ const geistSans = Geist({
   subsets: ['latin'],
 });
 
-export default async function LocalLayout({ children }: { children: ReactNode }) {
+type Props = {
+    children: ReactNode;
+}
+
+export default async function LocalLayout({ children }: Props) {
 
   const navbarProps: NavbarProps = {
     logo: {
       logoLight,
       logoDark,
       url: '/',
-      alt: "Lun'Air Logo",
+      alt: "ESTACA Logo",
     },
     menu: [
       {
-        title: 'Home',
+        title: 'LiveMap',
         url: '/',
       },
       {
@@ -40,7 +44,7 @@ export default async function LocalLayout({ children }: { children: ReactNode })
       url: '/',
       logoLight,
       logoDark,
-      alt: "Lun'Air Logo",
+      alt: "ESTACA Logo",
     },
     copyright: `© 2025 - ${new Date().getFullYear()} ESTACA. Copyright`,
     developed_by: 'Developed by',

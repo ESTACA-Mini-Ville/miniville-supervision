@@ -101,5 +101,5 @@ export default function MinivilleMap() {
         };
     }, []);
 
-    return <div ref={mapRef} style={{ width: '100%', height: '100vh' }} />;
+    return <div ref={mapRef} style={{ width: '100%', height: '100%' }} />;
 }

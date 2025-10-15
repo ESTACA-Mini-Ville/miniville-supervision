@@ -3,6 +3,8 @@ import MinivilleMap from '@/components/MinivilleMap';
 
 export default function Page() {
   return (
-      <MinivilleMap />
+      <div className="-mt-18 h-screen w-full pt-18">
+        <MinivilleMap />
+      </div>
   );
 }

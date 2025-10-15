@@ -30,13 +30,13 @@ const Footer = ({ logo, copyright, developed_by, links }: FooterProps) => {
                   src={logo.logoLight}
                   quality={25}
                   alt={logo.alt}
-                  className="block max-h-10 w-full object-contain dark:hidden"
+                  className="block max-h-16 w-full object-contain dark:hidden"
                 />
                 <Image
                   src={logo.logoDark}
                   quality={25}
                   alt={logo.alt}
-                  className="hidden max-h-10 w-full object-contain dark:block"
+                  className="hidden max-h-16 w-full object-contain dark:block"
                 />
                 <span className="text-lg font-semibold tracking-tighter"></span>
               </Link>
