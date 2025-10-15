@@ -1,6 +1,6 @@
-import Image, { StaticImageData } from 'next/image';
+import Image, { StaticImageData } from "next/image";
 
-import Link from 'next/link';
+import Link from "next/link";
 
 export interface FooterProps {
   logo: {

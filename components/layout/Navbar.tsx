@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { Menu } from 'lucide-react';
-import Image, { StaticImageData } from 'next/image';
+import { Menu } from "lucide-react";
+import Image, { StaticImageData } from "next/image";
 
-import { ThemeSwitcher } from '@/components/layout/ThemeSwitcher';
+import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -18,19 +18,19 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu';
+} from "@/components/ui/navigation-menu";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
+} from "@/components/ui/sheet";
 
-import { usePathname } from 'next/navigation'
-import Link from 'next/link'
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 interface MenuItem {
   title: string;
@@ -80,10 +80,10 @@ const Navbar = ({ logo, menu }: NavbarProps) => {
           <div className="flex items-center">
             <NavigationMenu>
               <NavigationMenuList>
-                {menu.map(item => {
+                {menu.map((item) => {
                   item.isActive =
                     pathname.endsWith(item.url) ||
-                    (item.url.includes(pathname) && pathname !== '/');
+                    (item.url.includes(pathname) && pathname !== "/");
                   return renderMenuItem(item);
                 })}
               </NavigationMenuList>
@@ -146,7 +146,7 @@ const Navbar = ({ logo, menu }: NavbarProps) => {
                     collapsible
                     className="flex w-full flex-col gap-4"
                   >
-                    {menu.map(item => renderMobileMenuItem(item))}
+                    {menu.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
                 </div>
               </SheetContent>
@@ -164,7 +164,7 @@ const renderMenuItem = (item: MenuItem) => {
       <NavigationMenuItem key={item.title}>
         <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
         <NavigationMenuContent className="bg-popover text-popover-foreground">
-          {item.items.map(subItem => (
+          {item.items.map((subItem) => (
             <NavigationMenuLink asChild key={subItem.title} className="w-80">
               <SubMenuLink item={subItem} />
             </NavigationMenuLink>
@@ -181,7 +181,7 @@ const renderMenuItem = (item: MenuItem) => {
         data-active={item.isActive}
         className={cn(
           "data-[active=true]:focus:bg-accent data-[active=true]:hover:bg-accent data-[active=true]:bg-accent/50 data-[active=true]:text-accent-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-ring/50 [&_svg:not([class*='text-'])]:text-muted-foreground flex flex-col gap-1 rounded-sm p-2 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4",
-          'group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors',
+          "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors",
         )}
       >
         {item.title}
@@ -198,7 +198,7 @@ const renderMobileMenuItem = (item: MenuItem) => {
           {item.title}
         </AccordionTrigger>
         <AccordionContent className="mt-2">
-          {item.items.map(subItem => (
+          {item.items.map((subItem) => (
             <SubMenuLink key={subItem.title} item={subItem} />
           ))}
         </AccordionContent>

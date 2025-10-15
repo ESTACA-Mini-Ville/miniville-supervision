@@ -1,58 +1,57 @@
-import './globals.css';
+import "./globals.css";
 
-import { Geist } from 'next/font/google';
-import { ReactNode } from 'react';
+import { Geist } from "next/font/google";
+import { ReactNode } from "react";
 
-import { Footer, FooterProps } from '@/components/layout/Footer';
-import { Navbar, NavbarProps } from '@/components/layout/Navbar';
-import { ThemeProvider } from '@/components/layout/ThemeProvider';
-import { Toaster } from '@/components/ui/sonner';
-import logoLight from '@/public/logo.webp';
-import logoDark from '@/public/logo-light.webp';
+import { Footer, FooterProps } from "@/components/layout/Footer";
+import { Navbar, NavbarProps } from "@/components/layout/Navbar";
+import { ThemeProvider } from "@/components/layout/ThemeProvider";
+import { Toaster } from "@/components/ui/sonner";
+import logoLight from "@/public/logo.webp";
+import logoDark from "@/public/logo-light.webp";
 
 const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
 });
 
 type Props = {
-    children: ReactNode;
-}
+  children: ReactNode;
+};
 
 export default async function LocalLayout({ children }: Props) {
-
   const navbarProps: NavbarProps = {
     logo: {
       logoLight,
       logoDark,
-      url: '/',
+      url: "/",
       alt: "ESTACA Logo",
     },
     menu: [
       {
-        title: 'LiveMap',
-        url: '/',
+        title: "LiveMap",
+        url: "/",
       },
       {
-        title: 'Debug',
-        url: '/debug',
+        title: "Debug",
+        url: "/debug",
       },
     ],
   };
   const footerProps: FooterProps = {
     logo: {
-      url: '/',
+      url: "/",
       logoLight,
       logoDark,
       alt: "ESTACA Logo",
     },
     copyright: `© 2025 - ${new Date().getFullYear()} ESTACA. Copyright`,
-    developed_by: 'Developed by',
+    developed_by: "Developed by",
     links: [
       {
-        title: 'GitHub',
-        url: 'https://github.com/ESTACA-Mini-Ville/'
-      }
+        title: "GitHub",
+        url: "https://github.com/ESTACA-Mini-Ville/",
+      },
     ],
   };
 
