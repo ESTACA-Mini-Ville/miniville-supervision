@@ -1,12 +1,13 @@
 import "./globals.css";
 
 import { Geist } from "next/font/google";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
-import { Footer, FooterProps } from "@/components/layout/Footer";
-import { Navbar, NavbarProps } from "@/components/layout/Navbar";
+import { Footer, type FooterProps } from "@/components/layout/Footer";
+import { Navbar, type NavbarProps } from "@/components/layout/Navbar";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { WebSocketProvider } from "@/lib/wsClient";
 import logoLight from "@/public/logo.webp";
 import logoDark from "@/public/logo-light.webp";
 
@@ -31,10 +32,6 @@ export default async function LocalLayout({ children }: Props) {
       {
         title: "LiveMap",
         url: "/",
-      },
-      {
-        title: "Debug",
-        url: "/debug",
       },
     ],
   };
@@ -64,14 +61,16 @@ export default async function LocalLayout({ children }: Props) {
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex min-h-screen flex-col justify-between gap-0">
-            <Navbar {...navbarProps} />
-            <main className="mt-18 flex-grow">
-              {children}
-              <Toaster />
-            </main>
-            <Footer {...footerProps} />
-          </div>
+          <WebSocketProvider>
+            <div className="flex min-h-screen flex-col justify-between gap-0">
+              <Navbar {...navbarProps} />
+              <main className="mt-18 flex-grow">
+                {children}
+                <Toaster />
+              </main>
+              <Footer {...footerProps} />
+            </div>
+          </WebSocketProvider>
         </ThemeProvider>
       </body>
     </html>
