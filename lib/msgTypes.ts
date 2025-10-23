@@ -14,12 +14,12 @@ export interface PoseMessage extends BaseMessagePayload {
   pose: {
     covariance: FixedLengthArray<number, 36>;
     pose: {
-      orientation: {
+      position: {
         x: number;
         y: number;
         z: number;
       };
-      quaternion: {
+      orientation: {
         w: number;
         x: number;
         y: number;

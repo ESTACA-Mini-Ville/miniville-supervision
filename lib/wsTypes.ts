@@ -1,7 +1,7 @@
 // Typed definitions for the WebSocket JSON encoding protocol described in
 // https://integration-service.docs.eprosima.com/en/v3.0.0/user_manual/systemhandle/websocket_sh.html#json-encoding-protocol
 
-import type { BaseMessagePayload } from "@/lib/msgTypes";
+import type { MessagePayload } from "@/lib/msgTypes";
 
 export type Op =
   | "advertise"
@@ -29,7 +29,7 @@ export interface UnadvertiseMsg extends BaseMessage {
 export interface PublishMsg extends BaseMessage {
   op: "publish";
   topic: string;
-  msg: BaseMessagePayload;
+  msg: MessagePayload;
 }
 
 export interface SubscribeMsg extends BaseMessage {
@@ -52,10 +52,10 @@ export type WSMessage =
 
 export interface WSContextValue {
   sendMessage: (msg: WSMessage | object) => void;
-  publish: (topic: string, msg: BaseMessagePayload) => void;
+  publish: (topic: string, msg: MessagePayload) => void;
   subscribeTopic: (topic: string, cb: MsgCallback) => () => void;
   isConnected: boolean;
   url: string;
 }
 
-export type MsgCallback = (msg: BaseMessagePayload) => void;
+export type MsgCallback = (msg: MessagePayload) => void;

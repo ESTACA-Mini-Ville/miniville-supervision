@@ -62,7 +62,7 @@ export default function MinivilleMap() {
       });
 
     // dynamic car source: features keyed by robot_id (typed)
-    const carSource = new VectorSource<Geometry>({ features: [] });
+    const carSource = new VectorSource<Feature<Geometry>>({ features: [] });
     const carLayer = new VectorLayer({ source: carSource, zIndex: 10 });
 
     // create map with only the image layer

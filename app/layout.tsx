@@ -33,10 +33,6 @@ export default async function LocalLayout({ children }: Props) {
         title: "LiveMap",
         url: "/",
       },
-      {
-        title: "Debug",
-        url: "/debug",
-      },
     ],
   };
   const footerProps: FooterProps = {
