@@ -1,4 +1,4 @@
-import Image, { StaticImageData } from "next/image";
+import Image, { type StaticImageData } from "next/image";
 
 import Link from "next/link";
 
@@ -48,6 +48,7 @@ const Footer = ({ logo, copyright, developed_by, links }: FooterProps) => {
                     target="_blank"
                     href="https://github.com/arthurpar06"
                     className="hover:text-primary underline"
+                    rel="noopener"
                   >
                     Arthur P
                   </a>
@@ -56,8 +57,8 @@ const Footer = ({ logo, copyright, developed_by, links }: FooterProps) => {
               </div>
             </div>
             <ul className="flex flex-col items-center justify-center gap-4 sm:flex-row md:justify-end">
-              {links.map((link, linkIdx) => (
-                <li key={linkIdx} className="hover:text-primary underline">
+              {links.map((link) => (
+                <li key={link.title} className="hover:text-primary underline">
                   <Link href={link.url}>{link.title}</Link>
                 </li>
               ))}

@@ -1,8 +1,9 @@
 "use client";
 
 import { Menu } from "lucide-react";
-import Image, { StaticImageData } from "next/image";
-
+import Image, { type StaticImageData } from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 import {
   Accordion,
@@ -26,9 +27,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
-import { usePathname } from "next/navigation";
-import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 
