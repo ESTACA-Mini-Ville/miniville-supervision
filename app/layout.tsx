@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { Footer, type FooterProps } from "@/components/layout/Footer";
 import { Navbar, type NavbarProps } from "@/components/layout/Navbar";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
+import { TeleopProvider } from "@/components/TeleopContext";
 import { Toaster } from "@/components/ui/sonner";
 import { WebSocketProvider } from "@/lib/wsClient";
 import logoLight from "@/public/logo.webp";
@@ -63,14 +64,16 @@ export default async function LocalLayout({ children }: Props) {
           disableTransitionOnChange
         >
           <WebSocketProvider>
-            <div className="flex min-h-screen flex-col justify-between gap-0">
-              <Navbar {...navbarProps} />
-              <main className="mt-18 flex-grow">
-                {children}
-                <Toaster />
-              </main>
-              <Footer {...footerProps} />
-            </div>
+            <TeleopProvider>
+              <div className="flex min-h-screen flex-col justify-between gap-0">
+                <Navbar {...navbarProps} />
+                <main className="mt-18 flex-grow">
+                  {children}
+                  <Toaster />
+                </main>
+                <Footer {...footerProps} />
+              </div>
+            </TeleopProvider>
           </WebSocketProvider>
         </ThemeProvider>
       </body>

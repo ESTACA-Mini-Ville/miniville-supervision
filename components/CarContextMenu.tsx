@@ -6,6 +6,7 @@ import type Point from "ol/geom/Point";
 import type OlMap from "ol/Map";
 import type VectorSource from "ol/source/Vector";
 import { type RefObject, useEffect, useRef, useState } from "react";
+import { useTeleop } from "@/components/TeleopContext";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -34,6 +35,8 @@ export default function CarContextMenu({
     y: 0,
     robotId: null,
   });
+
+  const teleop = useTeleop();
 
   useEffect(() => {
     if (!map) return;
@@ -140,6 +143,18 @@ export default function CarContextMenu({
     setMenu((s) => ({ ...s, open: false }));
   }
 
+  function handleTakeControl() {
+    const id = menu.robotId;
+    try {
+      if (id) {
+        // start teleop for this robot
+        teleop.startControl(id);
+      }
+    } catch (e) {
+      console.error("[CarContextMenu] take control error", e);
+    }
+    setMenu((s) => ({ ...s, open: false }));
+  }
 
   return (
     <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
@@ -161,6 +176,9 @@ export default function CarContextMenu({
           <ContextMenuLabel>Car {menu.robotId ?? ""}</ContextMenuLabel>
           <ContextMenuSeparator />
           <ContextMenuItem onSelect={handleCenter}>Center on</ContextMenuItem>
+          <ContextMenuItem onSelect={handleTakeControl}>
+            Take control
+          </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
     </div>
