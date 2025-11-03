@@ -20,9 +20,15 @@ export interface FooterProps {
     url: typeof Link.arguments.href;
   }[];
 }
+
 import { useEffect, useState } from "react";
 
-const Footer = ({ logo, copyrightStartYear, developed_by, links }: FooterProps) => {
+const Footer = ({
+  logo,
+  copyrightStartYear,
+  developed_by,
+  links,
+}: FooterProps) => {
   // Avoid using Date() during prerender — compute on client after hydration
   const [currentYear, setCurrentYear] = useState<number | null>(null);
   useEffect(() => {
