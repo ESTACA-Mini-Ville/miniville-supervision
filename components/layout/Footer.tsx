@@ -1,3 +1,5 @@
+"use client";
+
 import Image, { type StaticImageData } from "next/image";
 
 import Link from "next/link";
@@ -9,15 +11,30 @@ export interface FooterProps {
     logoDark: StaticImageData;
     alt: string;
   };
-  copyright: string;
+  // If provided, the footer will render a range from this start year to the current year.
+  // This value is computed on the client so it can use runtime Date().
+  copyrightStartYear?: number;
   developed_by: string;
   links: {
     title: string;
     url: typeof Link.arguments.href;
   }[];
 }
+import { useEffect, useState } from "react";
 
-const Footer = ({ logo, copyright, developed_by, links }: FooterProps) => {
+const Footer = ({ logo, copyrightStartYear, developed_by, links }: FooterProps) => {
+  // Avoid using Date() during prerender — compute on client after hydration
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
+
+  // During SSR, fall back to the provided start year so we don't call Date()
+  const displayYear = currentYear ?? copyrightStartYear ?? 2025;
+  const copyright =
+    copyrightStartYear && currentYear && copyrightStartYear < currentYear
+      ? `© ${copyrightStartYear} - ${currentYear} ESTACA. Copyright`
+      : `© ${displayYear} ESTACA. Copyright`;
   return (
     <section className="flex justify-center pt-8 pb-16">
       <div className="container">

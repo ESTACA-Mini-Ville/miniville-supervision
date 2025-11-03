@@ -42,7 +42,8 @@ export default async function LocalLayout({ children }: Props) {
       logoDark,
       alt: "ESTACA Logo",
     },
-    copyright: `© 2025 - ${new Date().getFullYear()} ESTACA. Copyright`,
+    // Pass a static start year and let the client Footer compute the current year
+    copyrightStartYear: 2025,
     developed_by: "Developed by",
     links: [
       {
