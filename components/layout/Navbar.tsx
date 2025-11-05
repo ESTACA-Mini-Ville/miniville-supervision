@@ -5,6 +5,7 @@ import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
+import { useTeleop } from "@/components/TeleopContext";
 import {
   Accordion,
   AccordionContent,
@@ -89,6 +90,8 @@ const Navbar = ({ logo, menu }: NavbarProps) => {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {/* Teleop status */}
+          <TeleopStatus />
           <ThemeSwitcher />
         </div>
       </nav>
@@ -228,6 +231,25 @@ const SubMenuLink = ({ item }: { item: MenuItem }) => {
       </div>
     </a>
   );
+};
+
+const TeleopStatus = () => {
+  const { controllingId, stopControl, isControlling } = useTeleop();
+  try {
+    if (!isControlling || !controllingId) return null;
+    return (
+      <div className="flex items-center gap-2">
+        <div className="text-sm">Currently controlling car {controllingId}</div>
+        <Button size="sm" variant="destructive" onClick={() => stopControl()}>
+          Stop controlling
+        </Button>
+      </div>
+    );
+  } catch (e) {
+    // if TeleopProvider is not mounted, don't render anything
+    console.log("[Navbar] TeleopStatus error", e);
+    return null;
+  }
 };
 
 export { Navbar };
