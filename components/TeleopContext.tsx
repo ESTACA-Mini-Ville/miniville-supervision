@@ -96,7 +96,11 @@ export const TeleopProvider: React.FC<{ children: React.ReactNode }> = ({
       // advertise topic before publishing any cmd_vel
       try {
         if (!teleopAdvertisedRef.current) {
-          sendMessage({ op: "advertise", topic: "cmd_vel", type: "geometry_msgs/Twist" });
+          sendMessage({
+            op: "advertise",
+            topic: "cmd_vel",
+            type: "geometry_msgs/Twist",
+          });
           teleopAdvertisedRef.current = true;
         }
       } catch (e) {
@@ -118,6 +122,7 @@ export const TeleopProvider: React.FC<{ children: React.ReactNode }> = ({
           },
         });
       } catch (e) {
+        console.error("[Teleop] initial stop publish error", e);
         // fallback to publishCmd if sendMessage throws for any reason
         try {
           publishCmd(robotId, { x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 0 });
@@ -128,34 +133,39 @@ export const TeleopProvider: React.FC<{ children: React.ReactNode }> = ({
 
       // start interval at ~5Hz
       if (intervalRef.current) window.clearInterval(intervalRef.current);
-      intervalRef.current = window.setInterval(() => {
-        try {
-          const gamepads = navigator.getGamepads?.() ?? [];
-          const gp = Array.from(gamepads).find((g) => !!g) as Gamepad | undefined;
-          if (!gp) {
-            // no gamepad plugged
-            if (activeRef.current) {
-              // publish zero
+      intervalRef.current = window.setInterval(
+        () => {
+          try {
+            const gamepads = navigator.getGamepads?.() ?? [];
+            const gp = Array.from(gamepads).find((g) => !!g) as
+              | Gamepad
+              | undefined;
+            if (!gp) {
+              // no gamepad plugged
+              if (activeRef.current) {
+                // publish zero
+                publishCmd(robotId, { x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 0 });
+              }
+              return;
+            }
+
+            const { active, linear, angular } = readGamepadCommand(gp, {
+              x_speed: 0.3,
+              w_speed: 1.0,
+            });
+
+            if (active) {
+              publishCmd(robotId, linear, angular);
+            } else {
+              // publish zero when not active to ensure stop
               publishCmd(robotId, { x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 0 });
             }
-            return;
+          } catch (e) {
+            console.error("[Teleop] interval error", e);
           }
-
-          const { active, linear, angular } = readGamepadCommand(gp, {
-            x_speed: 0.3,
-            w_speed: 1.0,
-          });
-
-          if (active) {
-            publishCmd(robotId, linear, angular);
-          } else {
-            // publish zero when not active to ensure stop
-            publishCmd(robotId, { x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 0 });
-          }
-        } catch (e) {
-          console.error("[Teleop] interval error", e);
-        }
-      }, (1 / 5) * 1e3);
+        },
+        (1 / 5) * 1e3,
+      );
     },
     [controllingId, publishCmd, sendMessage],
   );
@@ -182,6 +192,7 @@ export const TeleopProvider: React.FC<{ children: React.ReactNode }> = ({
           },
         });
       } catch (e) {
+        console.error("[Teleop] stop publish error", e);
         // fallback
         try {
           publishCmd(id, { x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 0 });
