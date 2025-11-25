@@ -9,10 +9,12 @@ export type GamepadCmd = {
 
 export function readGamepadCommand(
   gp: Gamepad,
-  opts?: { x_speed?: number; w_speed?: number },
+  opts?: { x_speed?: number; w_speed?: number; deadzone?: number },
 ): GamepadCmd {
-  const x_speed = opts?.x_speed ?? 0.3;
-  const w_speed = opts?.w_speed ?? 1.0;
+  const x_speed = opts?.x_speed ?? 0.6;
+  const w_speed = opts?.w_speed ?? 0.8;
+  // deadzone in raw axis units (0..1) below which input is ignored
+  const deadzone = opts?.deadzone ?? 0.02;
 
   // safe access to axes/buttons
   const axes = gp.axes ?? [];
@@ -23,10 +25,15 @@ export function readGamepadCommand(
   const pressed = !!(btn6 && (btn6 as GamepadButton).pressed);
 
   if (pressed) {
-    const forward = axes[3] ?? 0; // python used axes[3]
-    const rot = axes[0] ?? 0; // python used axes[0]
-    const linear = { x: x_speed * forward, y: 0, z: 0 };
-    const angular = { x: 0, y: 0, z: w_speed * rot };
+    let forward = axes[1] ?? 0; // python used axes[3]
+    let rot = axes[0] ?? 0; // python used axes[0]
+
+    // apply deadzone so small joystick noise is treated as zero
+    if (Math.abs(forward) <= deadzone) forward = 0;
+    if (Math.abs(rot) <= deadzone) rot = 0;
+
+    const linear = { x: -x_speed * forward, y: 0, z: 0 };
+    const angular = { x: 0, y: 0, z: -w_speed * rot };
     return { active: true, linear, angular };
   }
 
