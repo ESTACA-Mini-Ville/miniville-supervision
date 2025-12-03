@@ -26,7 +26,7 @@ export default function DestinationSelector({
         sendMessage({
           op: "advertise",
           topic: "destination",
-          type: "miniville_msgs/Destination",
+          type: "Destination",
         });
         advertised = true;
       } catch (e) {
