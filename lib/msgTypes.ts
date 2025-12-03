@@ -31,10 +31,7 @@ export interface PoseMessage extends BaseMessagePayload {
 
 export interface DestinationMessage extends BaseMessagePayload {
   // id of the target point in the map dataset
-  point_id: number;
-  // coordinates in map meters
-  x: number;
-  y: number;
+  destination_id: number;
 }
 
 export type MessagePayload = PoseMessage | DestinationMessage;
