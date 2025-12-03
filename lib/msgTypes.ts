@@ -29,4 +29,9 @@ export interface PoseMessage extends BaseMessagePayload {
   };
 }
 
-export type MessagePayload = PoseMessage;
+export interface DestinationMessage extends BaseMessagePayload {
+  // id of the target point in the map dataset
+  destination_id: number;
+}
+
+export type MessagePayload = PoseMessage | DestinationMessage;

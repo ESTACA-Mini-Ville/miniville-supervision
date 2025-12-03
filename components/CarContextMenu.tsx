@@ -19,9 +19,11 @@ import {
 export default function CarContextMenu({
   map,
   carSource,
+  onSetDestination,
 }: {
   map: OlMap | null;
   carSource: RefObject<VectorSource<Feature<Geometry>> | null>;
+  onSetDestination?: (robotId: string) => void;
 }) {
   const triggerRef = useRef<HTMLDivElement | null>(null);
   const [menu, setMenu] = useState<{
@@ -178,6 +180,18 @@ export default function CarContextMenu({
           <ContextMenuItem onSelect={handleCenter}>Center on</ContextMenuItem>
           <ContextMenuItem onSelect={handleTakeControl}>
             Take control
+          </ContextMenuItem>
+          <ContextMenuItem
+            onSelect={() => {
+              try {
+                if (menu.robotId && onSetDestination)
+                  onSetDestination(menu.robotId);
+              } catch (e) {
+                console.error("[CarContextMenu] set destination error", e);
+              }
+            }}
+          >
+            Set destination
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
