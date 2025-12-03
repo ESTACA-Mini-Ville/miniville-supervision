@@ -3,5 +3,7 @@ services:
     image: miniville_supervision_webapp
     build: .
     restart: unless-stopped
-    ports:
-      - "80:80"
+    network_mode: host
+    user: 1002:998
+    #ports:
+    #  - "80:3000"

@@ -41,29 +41,62 @@ export const TeleopProvider: React.FC<{ children: React.ReactNode }> = ({
       robotId: string,
       linear: { x: number; y: number; z: number },
       angular: { x: number; y: number; z: number },
+      // when force is true, bypass the tolerance-diff check and send even if
+      // values are identical. Still skip repeated all-zero publishes.
+      force = false,
     ) => {
-      // Only send if this command is meaningfully different from previous one
       const prev = lastCmdRef.current;
-      let shouldSend = false;
-      if (!prev) {
-        shouldSend = true;
-      } else {
-        const checkObj = (
-          a: { x: number; y: number; z: number },
-          b: { x: number; y: number; z: number },
-        ) => {
-          return (
-            Math.abs(a.x - b.x) > TOLERANCE ||
-            Math.abs(a.y - b.y) > TOLERANCE ||
-            Math.abs(a.z - b.z) > TOLERANCE
-          );
-        };
-        if (checkObj(prev.linear, linear) || checkObj(prev.angular, angular)) {
+
+      const isAllZero =
+        Math.abs(linear.x) <= TOLERANCE &&
+        Math.abs(linear.y) <= TOLERANCE &&
+        Math.abs(linear.z) <= TOLERANCE &&
+        Math.abs(angular.x) <= TOLERANCE &&
+        Math.abs(angular.y) <= TOLERANCE &&
+        Math.abs(angular.z) <= TOLERANCE;
+
+      if (!force) {
+        // Only send if this command is meaningfully different from previous one
+        let shouldSend = false;
+        if (!prev) {
           shouldSend = true;
+        } else {
+          const checkObj = (
+            a: { x: number; y: number; z: number },
+            b: { x: number; y: number; z: number },
+          ) => {
+            return (
+              Math.abs(a.x - b.x) > TOLERANCE ||
+              Math.abs(a.y - b.y) > TOLERANCE ||
+              Math.abs(a.z - b.z) > TOLERANCE
+            );
+          };
+          if (
+            checkObj(prev.linear, linear) ||
+            checkObj(prev.angular, angular)
+          ) {
+            shouldSend = true;
+          }
+        }
+
+        if (!shouldSend) return;
+      } else {
+        // force === true: send even if identical, but avoid resending repeated
+        // all-zero messages at the forced rate.
+        if (isAllZero) {
+          if (prev) {
+            const prevAllZero =
+              Math.abs(prev.linear.x) <= TOLERANCE &&
+              Math.abs(prev.linear.y) <= TOLERANCE &&
+              Math.abs(prev.linear.z) <= TOLERANCE &&
+              Math.abs(prev.angular.x) <= TOLERANCE &&
+              Math.abs(prev.angular.y) <= TOLERANCE &&
+              Math.abs(prev.angular.z) <= TOLERANCE;
+            if (prevAllZero) return; // skip repeated zero publishes
+          }
+          // else fall through and send the zero (transition to zero or first send)
         }
       }
-
-      if (!shouldSend) return;
 
       // Use sendMessage to bypass strict typing for custom cmd_vel payload
       const msg = {
@@ -152,12 +185,16 @@ export const TeleopProvider: React.FC<{ children: React.ReactNode }> = ({
             const { active, linear, angular } = readGamepadCommand(gp, {
               x_speed: 0.3,
               w_speed: 1.0,
+              deadzone: 0.02,
             });
 
             if (active) {
-              publishCmd(robotId, linear, angular);
+              // force publish at the interval rate even if values didn't change.
+              // publishCmd will still avoid repeated all-zero publishes.
+              publishCmd(robotId, linear, angular, true);
             } else {
-              // publish zero when not active to ensure stop
+              // publish zero when not active to ensure stop (use normal path so
+              // repeated zeros are filtered by tolerance logic)
               publishCmd(robotId, { x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 0 });
             }
           } catch (e) {
