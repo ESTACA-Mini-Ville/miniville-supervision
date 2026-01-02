@@ -1,8 +1,8 @@
 "use client";
 
-import Overlay from "ol/Overlay";
 import type OlMap from "ol/Map";
-import { useEffect, useRef } from "react";
+import Overlay from "ol/Overlay";
+import { useEffect } from "react";
 import { data as DEST_POINTS } from "@/lib/destinations";
 import type { DestinationMessage } from "@/lib/msgTypes";
 import { useWebSocket } from "@/lib/wsClient";
@@ -85,7 +85,7 @@ export default function DestinationSelector({
         try {
           const msg: DestinationMessage = {
             robot_id: robotId,
-            destination_id: p.id
+            destination_id: p.id,
           };
           publish("destination", msg);
         } catch (err) {
@@ -104,7 +104,6 @@ export default function DestinationSelector({
       map.addOverlay(overlay);
       overlays.push(overlay);
     });
-
 
     return () => {
       // Cleanup overlays
