@@ -53,7 +53,13 @@ export type WSMessage =
 export interface WSContextValue {
   sendMessage: (msg: WSMessage | object) => void;
   publish: (topic: string, msg: MessagePayload) => void;
-  subscribeTopic: (topic: string, cb: MsgCallback) => () => void;
+  // subscribeTopic is generic so callers can provide a callback typed to a
+  // specific MessagePayload variant (e.g. PoseMessage). Internally the
+  // implementation will upcast incoming messages to the requested type.
+  subscribeTopic: <T extends MessagePayload = MessagePayload>(
+    topic: string,
+    cb: (msg: T) => void,
+  ) => () => void;
   isConnected: boolean;
   url: string;
 }

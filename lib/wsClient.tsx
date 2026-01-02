@@ -11,12 +11,12 @@ import {
   useState,
 } from "react";
 import type { MessagePayload } from "@/lib/msgTypes";
-import type {
-  MsgCallback,
-  SubscribeMsg,
-  WSContextValue,
-  WSMessage,
-} from "./wsTypes";
+import type { SubscribeMsg, WSContextValue, WSMessage } from "./wsTypes";
+
+// A runtime-unchecked subscriber type that accepts the union MessagePayload.
+// Callers may provide a narrower typed callback; we store the callback as
+// accepting MessagePayload and invoke it with whatever payload arrived.
+export type RuntimeMsgCallback = (msg: MessagePayload) => void;
 
 const WSContext = createContext<WSContextValue | null>(null);
 
@@ -25,7 +25,7 @@ export const WebSocketProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ url = "ws://localhost:8080", children }) => {
   const wsRef = useRef<WebSocket | null>(null);
-  const subscribersRef = useRef(new Map<string, Set<MsgCallback>>());
+  const subscribersRef = useRef(new Map<string, Set<RuntimeMsgCallback>>());
   // topics that have been advertised by the server: topic -> { type }
   const advertisedRef = useRef(new Map<string, { type?: string }>());
   // topics we have already sent a subscribe for (remote side)
@@ -239,13 +239,18 @@ export const WebSocketProvider: React.FC<{
   );
 
   const subscribeTopic = useCallback(
-    (topic: string, cb: MsgCallback) => {
+    <T extends MessagePayload = MessagePayload>(
+      topic: string,
+      cb: (msg: T) => void,
+    ) => {
+      // store the callback as a runtime callback that accepts the union
+      const runtimeCb: RuntimeMsgCallback = cb as RuntimeMsgCallback;
       let set = subscribersRef.current.get(topic);
       if (!set) {
         set = new Set();
         subscribersRef.current.set(topic, set);
       }
-      set.add(cb);
+      set.add(runtimeCb);
 
       // if the topic is advertised and we haven't subscribed remotely, send subscribe with type
       const adv = advertisedRef.current.get(topic);
@@ -259,7 +264,7 @@ export const WebSocketProvider: React.FC<{
       return () => {
         const s = subscribersRef.current.get(topic);
         if (!s) return;
-        s.delete(cb);
+        s.delete(runtimeCb);
         if (s.size === 0) {
           subscribersRef.current.delete(topic);
           // only send unsubscribe if we had previously subscribed remotely

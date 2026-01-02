@@ -10,11 +10,13 @@ import Icon from "ol/style/Icon";
 import Style from "ol/style/Style";
 import { useEffect, useRef } from "react";
 import type { PoseMessage } from "@/lib/msgTypes";
-import type { MsgCallback } from "@/lib/wsTypes";
+import type { WSContextValue } from "@/lib/wsTypes";
 
 export function useCarLayer(
   map: OlMap | null,
-  subscribeTopic: (topic: string, cb: MsgCallback) => (() => void) | undefined,
+  // accept the same generic subscribe signature used in WSContextValue so
+  // callers can provide callbacks narrow as PoseMessage.
+  subscribeTopic: WSContextValue["subscribeTopic"],
 ) {
   const sourceRef = useRef<VectorSource<Feature<Geometry>> | null>(null);
 
