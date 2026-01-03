@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { WebSocketProvider } from "@/lib/wsClient";
 import logoLight from "@/public/logo.webp";
 import logoDark from "@/public/logo-light.webp";
+import { Metadata } from "next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,6 +20,10 @@ const geistSans = Geist({
 
 type Props = {
   children: ReactNode;
+};
+
+export const metadata: Metadata = {
+  title: "MiniVille Supervision",
 };
 
 export default async function LocalLayout({ children }: Props) {
